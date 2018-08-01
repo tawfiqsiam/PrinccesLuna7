@@ -1,10 +1,9 @@
 const botconfig = require("./botconfig.json");
-const tokenfile = require("./token.json");
+const tokenfile = require("./token.js");
 const {GOOGLE_API_KEY } = require('./api');
 const Discord = require("discord.js");
 const yt = require('ytdl-core');
 const fs = require("fs");
-
 const bot = new Discord.Client();
 
 
