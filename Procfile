@@ -1,2 +1,1 @@
-worker: node index.js
-worker: start easyrp 
+worker: node index.js 
