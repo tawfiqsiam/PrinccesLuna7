@@ -129,17 +129,10 @@ fs.readdir("./commands/", (err, files) => {
 bot.on("ready", async () => {
 
   console.log(`${bot.user.username} is online on ${bot.guilds.size} servers!`);
-  bot.user.setActivity({
-     details: 'Watching',
-     state: '4K TV',
-     startTimestamp,
-    
+  bot.user.setActivity("4K TV", {type: "WATCHING"});
 
-     largeImageKey: `4k-vs-hd-tv_jpg`,
+});
 
-    });
-
-  });
   
     
   
