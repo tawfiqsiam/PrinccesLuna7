@@ -1,1 +1,0 @@
-exports.TOKEN = process.env.token;
