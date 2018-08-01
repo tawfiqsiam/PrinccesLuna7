@@ -5,6 +5,7 @@ const yt = require('ytdl-core');
 const fs = require("fs");
 const bot = new Discord.Client();
 
+const startTimestamp = new Date();
 
 bot.commands = new Discord.Collection();
 
@@ -132,8 +133,10 @@ bot.on("ready", async () => {
      details: 'Watching',
      state: '4K TV',
      startTimestamp,
+    
 
-     largeImageKey: `4k-vs-hd-tv_jpg`
+     largeImageKey: `4k-vs-hd-tv_jpg`,
+
     });
 
   });
