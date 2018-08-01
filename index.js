@@ -1,5 +1,5 @@
 const botconfig = require("./botconfig.json");
-const TOKEN = require("./token.json");
+const TOKEN = process.env.tokenkey;
 const Discord = require("discord.js");
 const yt = require('ytdl-core');
 const fs = require("fs");
@@ -247,4 +247,4 @@ bot.on("message", async message => {
 
 });
 
-bot.login(TOKEN.token);
+bot.login(TOKEN);
