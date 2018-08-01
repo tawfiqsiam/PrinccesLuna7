@@ -1,5 +1,5 @@
 const botconfig = require("./botconfig.json");
-const tokenfile = require("./token.js");
+const {TOKEN} = require("./token");
 const {GOOGLE_API_KEY } = require('./api');
 const Discord = require("discord.js");
 const yt = require('ytdl-core');
@@ -248,4 +248,4 @@ bot.on("message", async message => {
 
 });
 
-bot.login(tokenfile.token);
+bot.login(TOKEN);
