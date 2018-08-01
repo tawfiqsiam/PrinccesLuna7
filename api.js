@@ -1,1 +1,1 @@
-exports.GOOGLE_API_KEY =  process.env.GOOGLE_API;
+exports.GOOGLE_API_KEY =  'process.env.GOOGLE_API';
