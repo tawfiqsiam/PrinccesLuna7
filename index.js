@@ -181,13 +181,12 @@ bot.on("message", async message => {
   if(message.author.bot) return;
   if(message.channel.type === "dm") return;
 
-  let prefixes = JSON.parse(fs.readFileSync("./prefixes.json", "utf8"));
+  
   if(!prefixes[message.guild.id]){
     prefixes[message.guild.id] = {
       prefixes: botconfig.prefix
     }
   
-  if(!message.content.startsWith(prefix)) return;
   if(cooldown.has(message.author.id)){
     message.delete();
     let cdembed = new Discord.RichEmbed()
@@ -266,7 +265,6 @@ bot.on("message", async message => {
     if(err) console.log(err)
   });
 
-  let prefix = prefixes[message.guild.id].prefixes;
   if(!message.content.startsWith(prefix)) return;
   if(cooldown.has(message.author.id)){
     message.react("⌛");
