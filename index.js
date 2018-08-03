@@ -13,7 +13,7 @@ let xp = require("./xp.json");
 let purple = botconfig.purple;
 let cooldown = new Set();
 let cdseconds = 2;
-const prefix = ".";
+const prefix = botconfig.prefix;
 const color = botconfig.color;
 
 
@@ -124,7 +124,6 @@ bot.on("message", async message => {
   } else if (message.content.startsWith(`${prefix}stop`)) {
     if (!message.member.voiceChannel) return message.channel.send("**You must be in a voice channel to use this bot!**❌");
     if (!serverQueue) return message.channel.send("**Nothing is playing right now!**❌");
-    serverQueue.songs = [];
     serverQueue.dispatcher.end();
     return message.channel.send("**Stopped and cleared queue!**:recycle:");
   } else if (message.content.startsWith(`${prefix}np`)) {
@@ -181,28 +180,7 @@ bot.on("message", async message => {
   if(message.author.bot) return;
   if(message.channel.type === "dm") return;
 
-  
-  if(!prefixes[message.guild.id]){
-    prefixes[message.guild.id] = {
-      prefixes: botconfig.prefix
-    }
-  
-  if(cooldown.has(message.author.id)){
-    message.delete();
-    let cdembed = new Discord.RichEmbed()
-    .setAuthor(message.author.username)
-    .setColor(botconfig.red)
-    .addField("❌Error", "You need to wait 5 secs between commands.");
-    return message.channel.send(cdembed).then(msg => {msg.delete(3000)});1
-  }
-  if(!message.member.hasPermission("ADMINISTRATOR")){
-    cooldown.add(message.author.id);
-  }
-  let messageArray = message.content.split(" ");
-  let cmd = messageArray[0];
-  let args = messageArray.slice(1);
-	}
-	
+
   if(!coins[message.author.id]){
     coins[message.author.id] = {
       coins: 0
@@ -223,7 +201,7 @@ bot.on("message", async message => {
   let coinEmbed = new Discord.RichEmbed()
   .setAuthor(message.author.username)
   .setColor("#0000FF")
-  .addField("💰", `${coinAmt} coins added!`).then(msg => {msg.delete(3000)});
+  .addField("💰", `${coinAmt} coins added!`);
   
 
   message.channel.send(coinEmbed);
@@ -256,8 +234,8 @@ bot.on("message", async message => {
     .setThumbnail(bicon)
     .addField("New Level", curlvl + 1);
 
-    let levelupchannel = message.guild.channels.find(`name`, "level-up-чат");
-    if(!levelupchannel) return message.reply("Couldn't find channel");
+    //let levelupchannel = message.guild.channels.find(`name`, "level-up-чат");
+    //if(!levelupchannel) return message.reply("Couldn't find channel");
     
     levelupchannel.send(lvlup);
   }
@@ -265,13 +243,7 @@ bot.on("message", async message => {
     if(err) console.log(err)
   });
 
-  if(!message.content.startsWith(prefix)) return;
-  if(cooldown.has(message.author.id)){
-    message.react("⌛");
-    return message.reply("You have to wait 2 seconds between commands.").then(m => m.delete(5000));
-
-    
-  }
+ 
   //if(!message.member.hasPermission("ADMINISTRATOR")){
     cooldown.add(message.author.id);
 //}
