@@ -13,7 +13,7 @@ let xp = require("./xp.json");
 let purple = botconfig.purple;
 let cooldown = new Set();
 let cdseconds = 2;
-const prefix = botconfig.prefix;
+const prefix = ".";
 const color = botconfig.color;
 
 
