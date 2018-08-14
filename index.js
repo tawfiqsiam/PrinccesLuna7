@@ -37,6 +37,7 @@ bot.on("reconnecting", async() =>{
   console.log("Coming back to lane!");
 });
 
+
 bot.on("message", async message => {
   if (message.author.bot) return;
   if(!message.content.startsWith(prefix)) return;
@@ -49,6 +50,8 @@ bot.on("message", async message => {
     let permissions = voiceChannel.permissionsFor(message.client.user);
     if (!permissions.has("CONNECT")) return message.channel.send("Inadequate permissions for me!");
     if (!permissions.has("SPEAK")) return message.channel.send("Inadequate permissions for me!");
+    
+    
     try {
       var video = await youtube.getVideo(args[0]);
     } catch(err){
@@ -237,7 +240,7 @@ bot.on("message", async message => {
     //let levelupchannel = message.guild.channels.find(`name`, "level-up-чат");
     //if(!levelupchannel) return message.reply("Couldn't find channel");
     
-    levelupchannel.send(lvlup);
+    message.channel.send(lvlup);
   }
   fs.writeFile("./xp.json", JSON.stringify(xp), (err) => {
     if(err) console.log(err)
@@ -274,7 +277,7 @@ function play(guild, song){
     return;
   }
 
-  serverQueue.textChannel.send(`🎶Now playing ${song.title}`);
+  serverQueue.textChannel.send(`🎶Now playing: ${song.title}`);
   serverQueue.dispatcher = serverQueue.connection.playStream(ytdl(song.url), {
     filter: "audioonly",
     quality: "highestaudio"

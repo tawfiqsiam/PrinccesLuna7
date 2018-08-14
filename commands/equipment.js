@@ -31,7 +31,7 @@ module.exports.run = async (bot, message, args) => {
   let equipEmbed = new Discord.RichEmbed()
   .setAuthor(message.author.username)
   .setColor(purple)
-  .setDescription("**Equipment**")
+  .setDescription("**Items**")
   .addField("Helmet", uHelmet)
   .addField("Chestplate", uChest)
   .addField("Legs", uLeg)
