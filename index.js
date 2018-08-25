@@ -28,6 +28,40 @@ let queue = new Map();
 
 let dispatcher;
 
+fs.readdir("./commands/", (err, files) => {
+
+  if(err) console.log(err);
+  let jsfile = files.filter(f => f.split(".").pop() === "js");
+  if(jsfile.length <= 0){
+    console.log("Couldn't find commands.");
+    return;
+  }
+
+  jsfile.forEach((f, i) =>{
+    let props = require(`./commands/${f}`);
+    console.log(`${f} loaded!`);
+    bot.commands.set(props.help.name, props);
+  });
+});
+bot.on("ready", async () => {
+  console.log(`${bot.user.username} is online on ${bot.guilds.size} servers!`);
+  bot.user.setActivity("4K TV", {type: "WATCHING"});
+
+});
+
+bot.on("message", async message => {
+  if(message.author.bot) return;
+  if(message.channel.type === "dm") return;
+
+  let prefix = botconfig.prefix;
+  let messageArray = message.content.split(" ");
+  let cmd = messageArray[0];
+  let args = messageArray.slice(1);
+  let commandfile = bot.commands.get(cmd.slice(prefix.length));
+  if(commandfile) commandfile.run(bot,message,args);
+
+});
+
 
 bot.on("disconnect", async() => {
   console.log("BRB, going back to base!");
@@ -42,6 +76,7 @@ bot.on("message", async message => {
   if (message.author.bot) return;
   if(!message.content.startsWith(prefix)) return;
   let args = message.content.split(" ").splice(1);
+  const url = args[1] ? args[1].replace(/<(.+)>/g, '$1') : '';
   let serverQueue = queue.get(message.guild.id);
 
   if (message.content.startsWith(`${prefix}play`)){
@@ -50,7 +85,20 @@ bot.on("message", async message => {
     let permissions = voiceChannel.permissionsFor(message.client.user);
     if (!permissions.has("CONNECT")) return message.channel.send("Inadequate permissions for me!");
     if (!permissions.has("SPEAK")) return message.channel.send("Inadequate permissions for me!");
-    
+    if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
+
+			const playlist = await youtube.getPlaylist(url);
+            const videos = await playlist.getVideos();
+            
+
+			for (const video of Object.values(videos)) {
+                
+                const video2 = await youtube.getVideoByID(video.id); 
+                await handleVideo(video2, msg, voiceChannel, true); 
+            }
+			return msg.channel.send(`**${playlist.title}**, Just added to the queue!`);
+		} else 
+
     
     try {
       var video = await youtube.getVideo(args[0]);
@@ -127,7 +175,9 @@ bot.on("message", async message => {
   } else if (message.content.startsWith(`${prefix}stop`)) {
     if (!message.member.voiceChannel) return message.channel.send("**You must be in a voice channel to use this bot!**❌");
     if (!serverQueue) return message.channel.send("**Nothing is playing right now!**❌");
-    serverQueue.dispatcher.end();
+    
+   serverQueue.songs = [0];
+   serverQueue.connection.dispatcher.end('**Stopped and cleared queue!**:recycle:');
     return message.channel.send("**Stopped and cleared queue!**:recycle:");
   } else if (message.content.startsWith(`${prefix}np`)) {
     if (!serverQueue) return message.channel.send("**Nothing is playing right now!**❌");
@@ -148,28 +198,7 @@ bot.on("message", async message => {
   }
 });
 
-fs.readdir("./commands/", (err, files) => {
 
-  if(err) console.log(err);
-  let jsfile = files.filter(f => f.split(".").pop() === "js");
-  if(jsfile.length <= 0){
-    console.log("Couldn't find commands.");
-    return;
-  }
-
-  jsfile.forEach((f, i) =>{
-    let props = require(`./commands/${f}`);
-    console.log(`${f} loaded!`);
-    bot.commands.set(props.help.name, props);
-  });
-});
-
-bot.on("ready", async () => {
-
-  console.log(`${bot.user.username} is online on ${bot.guilds.size} servers!`);
-  bot.user.setActivity("4K TV", {type: "WATCHING"});
-
-});
 
   
     
