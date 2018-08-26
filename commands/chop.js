@@ -32,6 +32,12 @@ module.exports.run = async (bot, message, args) => {
 
   message.delete();
 
+
+
+
+
+
+  
   if(woodgained === 0){
     let failembed = new Discord.RichEmbed()
     .setAuthor(message.author.username)

@@ -58,7 +58,7 @@ module.exports.run = async (bot, message, args) => {
     if(!weapon[message.author.id]) weapon[message.author.id] = {
       weapon: item
     };
-    weapon[message.author.id] = {
+    weapon[message.author.id]= {
       weapon: item
     };
     fs.writeFile("./playerequipment/weapon.json", JSON.stringify(weapon), (err) => {
@@ -115,5 +115,5 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.help = {
-  name: "buy"
+  name: "buy" 
 }

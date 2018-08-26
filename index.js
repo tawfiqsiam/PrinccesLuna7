@@ -28,41 +28,6 @@ let queue = new Map();
 
 let dispatcher;
 
-fs.readdir("./commands/", (err, files) => {
-
-  if(err) console.log(err);
-  let jsfile = files.filter(f => f.split(".").pop() === "js");
-  if(jsfile.length <= 0){
-    console.log("Couldn't find commands.");
-    return;
-  }
-
-  jsfile.forEach((f, i) =>{
-    let props = require(`./commands/${f}`);
-    console.log(`${f} loaded!`);
-    bot.commands.set(props.help.name, props);
-  });
-});
-bot.on("ready", async () => {
-  console.log(`${bot.user.username} is online on ${bot.guilds.size} servers!`);
-  bot.user.setActivity("4K TV", {type: "WATCHING"});
-
-});
-
-bot.on("message", async message => {
-  if(message.author.bot) return;
-  if(message.channel.type === "dm") return;
-
-  let prefix = botconfig.prefix;
-  let messageArray = message.content.split(" ");
-  let cmd = messageArray[0];
-  let args = messageArray.slice(1);
-  let commandfile = bot.commands.get(cmd.slice(prefix.length));
-  if(commandfile) commandfile.run(bot,message,args);
-
-});
-
-
 bot.on("disconnect", async() => {
   console.log("BRB, going back to base!");
 });
@@ -98,8 +63,7 @@ bot.on("message", async message => {
             }
 			return msg.channel.send(`**${playlist.title}**, Just added to the queue!`);
 		} else 
-
-    
+   
     try {
       var video = await youtube.getVideo(args[0]);
     } catch(err){
@@ -142,6 +106,7 @@ bot.on("message", async message => {
       serverQueue.songs.push(song);
       return message.channel.send(`**Added ${song.title} to the queue**✅`);
     }
+ 
   } else if (message.content.startsWith(`${prefix}pause`)) {
     const serverQueue = queue.get(message.guild.id);
     if (!message.member.voiceChannel) return message.channel.send("**You must be in a voice channel to use this bot!**❌");
@@ -152,6 +117,7 @@ bot.on("message", async message => {
     } else {
       return message.channel.send("**Nothing is playing right now!**❌");
     }
+ 
   } else if (message.content.startsWith(`${prefix}resume`)) {
     if (!message.member.voiceChannel) return message.channel.send("**You must be in a voice channel to use this bot!**❌");
     if (!serverQueue) return message.channel.send("**Nothing is playing right now!**❌");
@@ -161,17 +127,20 @@ bot.on("message", async message => {
     } else {
       return message.channel.send("**Something is already playing!**🔊");
     }
+ 
   } else if (message.content.startsWith(`${prefix}volume`)) {
     if (!message.member.voiceChannel) return message.channel.send("**You must be in a voice channel to use this bot!**❌");
     if (!serverQueue) return message.channel.send("**Nothing is playing right now!**❌");
     if (!args[0]) return message.channel.send(`**The current volume is:** ${serverQueue.volume}`);
     serverQueue.dispatcher.setVolumeLogarithmic(args[0]);
     return message.channel.send(`**Set the volume to:** ${args[0]}🔊`);
+  
   } else if (message.content.startsWith(`${prefix}skip`)) {
     if (!message.member.voiceChannel) return message.channel.send("**You must be in a voice channel to use this bot!**❌");
     if (!serverQueue) return message.channel.send("**Nothing is playing right now!**❌");
     serverQueue.dispatcher.end();
     return message.channel.send("**Skipped song!**")
+  
   } else if (message.content.startsWith(`${prefix}stop`)) {
     if (!message.member.voiceChannel) return message.channel.send("**You must be in a voice channel to use this bot!**❌");
     if (!serverQueue) return message.channel.send("**Nothing is playing right now!**❌");
@@ -179,13 +148,16 @@ bot.on("message", async message => {
    serverQueue.songs = [0];
    serverQueue.connection.dispatcher.end('**Stopped and cleared queue!**:recycle:');
     return message.channel.send("**Stopped and cleared queue!**:recycle:");
+  
   } else if (message.content.startsWith(`${prefix}np`)) {
     if (!serverQueue) return message.channel.send("**Nothing is playing right now!**❌");
     return message.channel.send(`🎵 **Currently playing:** ${serverQueue.songs[0].title}`);
-   } else if (message.content.startsWith(`${prefix}help`)) {
+  
+  } else if (message.content.startsWith(`${prefix}help`)) {
       let tosend = ['```xl', botconfig.prefix + 'join : "Join Voice channel of msg sender"', botconfig.prefix + 'np : "Shows the currently playing song"', botconfig.prefix + 'queue : "Shows the current queue, up to 15 songs shown."', botconfig.prefix + 'play : "Play the music queue if already joined to a voice channel"', '', 'the following commands only function while the play command is running:'.toUpperCase(), botconfig.prefix + 'pause : "pauses the music"',	botconfig.prefix + 'resume : "resumes the music"', botconfig.prefix + 'skip : "skips the playing song"', botconfig.prefix + 'stop : "Forces the bot to stop whatever it is playing and leave the voice channel."','volume 1-5 : "adjusts the sound"','```'];
       message.channel.sendMessage(tosend.join('\n'));
-  } else if (message.content.startsWith(`${prefix}queue`)){
+ 
+    } else if (message.content.startsWith(`${prefix}queue`)){
     if (!serverQueue) return message.channel.send("**Nothing is playing right now!**❌");
     let embedqueue = new Discord.RichEmbed()
     .setTitle("__**Song Queue**__")
@@ -199,10 +171,24 @@ bot.on("message", async message => {
 });
 
 
+fs.readdir("./commands/", (err, files) => {
+  if(err) console.log(err);
+ let jsfile = files.filter(f => f.split(".").pop() === "js");
+ if(jsfile.length <= 0){
+   console.log("Couldn't find commands.");
+   return;
+ }
+  jsfile.forEach((f, i) =>{
+   let props = require(`./commands/${f}`);
+   console.log(`${f} loaded!`);
+   bot.commands.set(props.help.name, props);
+ });
+});
+bot.on("ready", async () => {
+  console.log(`${bot.user.username} is online on ${bot.guilds.size} servers!`);
+ bot.user.setActivity("4K TV", {type: "WATCHING"});
+});
 
-  
-    
-  
   
   
 
